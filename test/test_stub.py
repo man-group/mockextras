@@ -87,7 +87,7 @@ def test_lookup():
     with pytest.raises(KeyError):
         stub()._lookup(sentinel.keya)
     
-    test_data = stub(sentinel.keya, sentinel.vala, sentinel.keyb, sentinel.valb)
+    test_data = stub((sentinel.keya, sentinel.vala), (sentinel.keyb, sentinel.valb))
     
     assert sentinel.vala == test_data._lookup(sentinel.keya)
     
@@ -148,10 +148,10 @@ def test_stub_missing_case():
 
 def test_stub_switches_on_args():
     mock_fn = Mock()
-    mock_fn.side_effect = stub(call(sentinel.argfoo), sentinel.foo,
-                               call(sentinel.whatever, sentinel.argbar), sentinel.bar,
-                               call(sentinel.whatever, sentinel.argbang), RuntimeError,
-                               call(sentinel.whatever, sentinel.argboom), RuntimeError(sentinel.boom))
+    mock_fn.side_effect = stub((call(sentinel.argfoo), sentinel.foo),
+                               (call(sentinel.whatever, sentinel.argbar), sentinel.bar),
+                               (call(sentinel.whatever, sentinel.argbang), RuntimeError),
+                               (call(sentinel.whatever, sentinel.argboom), RuntimeError(sentinel.boom)))
     
     assert mock_fn(sentinel.argfoo) == sentinel.foo
     
@@ -170,11 +170,11 @@ def test_stub_switches_on_args():
         
 def test_stub_sequence_of_results():
     mock_fn = Mock()
-    mock_fn.side_effect = stub(call(sentinel.argfoo), seq(sentinel.foo,
-                                                          sentinel.bar,
-                                                          RuntimeError,
-                                                          RuntimeError(sentinel.boom),
-                                                          sentinel.all_ok_now))
+    mock_fn.side_effect = stub((call(sentinel.argfoo), seq(sentinel.foo,
+                                                           sentinel.bar,
+                                                           RuntimeError,
+                                                           RuntimeError(sentinel.boom),
+                                                           sentinel.all_ok_now)))
     
     assert mock_fn(sentinel.argfoo) == sentinel.foo
     
