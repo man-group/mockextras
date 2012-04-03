@@ -1,4 +1,4 @@
-from stub import stub, seq, _Sequence
+from stub import stub, seq, _Sequence, stub2
 from mock import Mock, sentinel, patch, call
 import pytest
 
@@ -194,3 +194,49 @@ def test_stub_sequence_of_results():
     
     with pytest.raises(StopIteration):
         mock_fn(sentinel.argfoo)
+        
+
+def test_stub2_no_args():
+    with patch("stub._Stub") as mock_stub:
+        stub2()
+    mock_stub.assert_called_once_with()        
+
+
+def test_stub2_errors():
+    with pytest.raises(RuntimeError):
+        stub2(call())
+    
+    with pytest.raises(RuntimeError):
+        stub2(sentinel.call, sentinel.value)
+
+    with pytest.raises(RuntimeError):
+        stub2(call(sentinel.a), sentinel.value, call(sentinel.b))
+    
+    with pytest.raises(RuntimeError):
+        stub2(sentinel.call, sentinel.value)
+    
+    with pytest.raises(RuntimeError):
+        stub2(sentinel.call1, sentinel.value1, sentinel.call2, sentinel.value2)
+    
+    with pytest.raises(RuntimeError):
+        stub2(sentinel.call, sentinel.value)
+    
+    with pytest.raises(RuntimeError):
+        stub2(sentinel.call1, sentinel.value1, sentinel.call2, sentinel.value2)
+    
+    with pytest.raises(RuntimeError):
+        stub2(sentinel.value, call(sentinel.a, sentinel.b))
+    
+    with pytest.raises(RuntimeError):
+        stub2(call(sentinel.a), call(sentinel.b), call(sentinel.c, sentinel.value))
+
+
+def test_stub2_good_args():
+    with patch("stub._Stub") as mock_stub:
+        stub2(call(sentinel.a, sentinel.b), sentinel.value)
+    mock_stub.assert_called_once_with((call(sentinel.a, sentinel.b), sentinel.value))
+
+    with patch("stub._Stub") as mock_stub:
+        stub2(call(sentinel.a), sentinel.value1, call(sentinel.b), sentinel.value1)
+    mock_stub.assert_called_once_with((call(sentinel.a), sentinel.value1),
+                                      (call(sentinel.b), sentinel.value1))
