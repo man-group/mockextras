@@ -1,5 +1,5 @@
-from fluent import when
-from matchers import Any
+from mockextras.fluent import when
+from mockextras.matchers import Any
 from mock import Mock, MagicMock, sentinel
 import pytest
 

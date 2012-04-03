@@ -1,5 +1,5 @@
 from mock import Mock, _is_exception, call
-from stub import _Sequence, _Stub
+from .stub import _Sequence, _Stub
 
 
 def when(mock_fn):

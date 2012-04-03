@@ -23,6 +23,7 @@ def seq(*args):
     
     You can pass in several arguments:
     
+    >>> from mock import Mock
     >>> mock = Mock(side_effect = stub2(call(), seq(1,2,3)))
     >>> mock()
     1
@@ -33,7 +34,7 @@ def seq(*args):
     
     or a single iterable argument, for example a list:
     
-    >>> l = range(5)
+    >>> l = range(1, 5)
     >>> mock = Mock(side_effect = stub2(call(), seq(l)))
     >>> mock()
     1
@@ -44,7 +45,7 @@ def seq(*args):
 
     or a iterator/generator:
 
-    >>> i = xrange(5)
+    >>> i = xrange(1, 5)
     >>> mock = Mock(side_effect = stub2(call(), seq(i)))
     >>> mock()
     1

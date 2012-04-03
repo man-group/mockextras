@@ -1,4 +1,4 @@
-from stub import stub, seq, _Sequence, stub2
+from mockextras.stub import stub, seq, _Sequence, stub2
 from mock import Mock, sentinel, patch, call
 import pytest
 
@@ -101,7 +101,7 @@ def test_universal_side_effect():
     st = stub()
     
     with patch.object(st, "_lookup") as mock_lookup: #@UndefinedVariable
-        with patch("stub.call") as mock_callargs:
+        with patch("mockextras.stub.call") as mock_callargs:
             assert mock_lookup.return_value == st(sentinel.arg1, sentinel.arg2)
     
     mock_callargs.assert_called_once_with(sentinel.arg1, sentinel.arg2)
@@ -112,7 +112,7 @@ def test_stub_exception():
     st = stub()
     
     with patch.object(st, "_lookup", return_value=RuntimeError) as mock_lookup: #@UndefinedVariable
-        with patch("stub.call") as mock_callargs:
+        with patch("mockextras.stub.call") as mock_callargs:
             with pytest.raises(RuntimeError):
                 st(sentinel.arg1, sentinel.arg2)
     
@@ -124,8 +124,8 @@ def test_stub_sequence():
     st = stub()
     
     with patch.object(st, "_lookup") as mock_lookup: #@UndefinedVariable
-        with patch("stub.call") as mock_callargs:
-            with patch("stub.isinstance", create=True, return_value=True) as mock_isinstance:
+        with patch("mockextras.stub.call") as mock_callargs:
+            with patch("mockextras.stub.isinstance", create=True, return_value=True) as mock_isinstance:
                 assert mock_lookup.return_value.return_value == st(sentinel.arg1, sentinel.arg2)
     
     mock_isinstance.assert_called_once_with(mock_lookup.return_value, _Sequence)
@@ -138,7 +138,7 @@ def test_stub_missing_case():
     st = stub()
     
     with patch.object(st, "_lookup", side_effect=KeyError) as mock_lookup: #@UndefinedVariableF
-        with patch("stub.call") as mock_callargs:
+        with patch("mockextras.stub.call") as mock_callargs:
             with pytest.raises(KeyError):
                 assert st(sentinel.arg1, sentinel.arg2)
     
@@ -197,7 +197,7 @@ def test_stub_sequence_of_results():
         
 
 def test_stub2_no_args():
-    with patch("stub._Stub") as mock_stub:
+    with patch("mockextras.stub._Stub") as mock_stub:
         stub2()
     mock_stub.assert_called_once_with()        
 
@@ -232,11 +232,11 @@ def test_stub2_errors():
 
 
 def test_stub2_good_args():
-    with patch("stub._Stub") as mock_stub:
+    with patch("mockextras.stub._Stub") as mock_stub:
         stub2(call(sentinel.a, sentinel.b), sentinel.value)
     mock_stub.assert_called_once_with((call(sentinel.a, sentinel.b), sentinel.value))
 
-    with patch("stub._Stub") as mock_stub:
+    with patch("mockextras.stub._Stub") as mock_stub:
         stub2(call(sentinel.a), sentinel.value1, call(sentinel.b), sentinel.value1)
     mock_stub.assert_called_once_with((call(sentinel.a), sentinel.value1),
                                       (call(sentinel.b), sentinel.value1))

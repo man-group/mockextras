@@ -1,4 +1,4 @@
-from matchers import Any, Contains
+from mockextras.matchers import Any, Contains
 
 
 def test_any_equality():
