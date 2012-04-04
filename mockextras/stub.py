@@ -11,7 +11,7 @@
 
 
 """mockextras.stub provides an implementation of stubs that can be used with mock.
-The you stub a mock by setting its side_effect:
+You stub a mock by setting its side_effect:
 
 >>> from mock import Mock, call
 >>> mock = Mock()
