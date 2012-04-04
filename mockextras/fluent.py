@@ -1,42 +1,78 @@
+# mockextras.fluent
+# Matchers and Stubs for mock.
+# Copyright (C) 2012 Andrew Burrows
+# E-mail: burrowsa AT gmail DOT com
+
+# mockextras 0.0.0
+# https://github.com/burrowsa/mockextras
+
+# Released subject to the BSD License
+# Please see https://github.com/burrowsa/mockextras/blob/master/LICENSE.txt
+
+
+"""mockextras.fluent provides a fluent API for specifying stubs.
+
+>>> from mock import Mock
+>>> mock = Mock()
+>>> when(mock).called_with("hello").then("world")
+<BLANKLINE>
+>>> when(mock).called_with("foo").then("bar")
+<BLANKLINE>
+>>> when(mock).called_with(100, 200).then(RuntimeError("Boom!"))
+<BLANKLINE>
+>>> mock("hello")
+'world'
+>>> mock("foo")
+'bar'
+>>> mock(100, 200)
+Traceback (most recent call last):
+...
+RuntimeError: Boom!
+
+See when() for more info. 
+"""
+
+
 from mock import Mock, _is_exception, call
 from .stub import _Sequence, _Stub
 
 
 def when(mock_fn):
-    """Provides a fluent API for specifying mock side_effects.
+    """Provides a fluent API for specifying stubs.
     
     For example, you can specify different values to return or exceptions to raise 
     based on the arguments passed into the called_with:
-        
-    >>> mock_fn = Mock()
-    >>> when(mock_fn).called_with("hello").then("world")
+    
+    >>> from mock import Mock
+    >>> mock = Mock()
+    >>> when(mock).called_with("hello").then("world")
     <BLANKLINE>
-    >>> when(mock_fn).called_with("foo").then("bar")
+    >>> when(mock).called_with("foo").then("bar")
     <BLANKLINE>
-    >>> when(mock_fn).called_with(100, 200).then(RuntimeError("Boom!"))
+    >>> when(mock).called_with(100, 200).then(RuntimeError("Boom!"))
     <BLANKLINE>
-    >>> mock_fn("hello")
+    >>> mock("hello")
     'world'
-    >>> mock_fn("foo")
+    >>> mock("foo")
     'bar'
-    >>> mock_fn(100, 200)
+    >>> mock(100, 200)
     Traceback (most recent call last):
     ...
     RuntimeError: Boom!
 
 
-    You can use 'then' multiple times to specify a sequence of side effects.
+    You can use 'then' multiple times to specify a sequence of results.
     
-    >>> mock_fn = Mock()
-    >>> when(mock_fn).called_with("monkey").then("weezel")\\
+    >>> mock = Mock()
+    >>> when(mock).called_with("monkey").then("weezel")\\
     ...                                    .then("badger")\\
     ...                                    .then(RuntimeError("Boom!"))
     <BLANKLINE>
-    >>> mock_fn("monkey")
+    >>> mock("monkey")
     'weezel'
-    >>> mock_fn("monkey")
+    >>> mock("monkey")
     'badger'
-    >>> mock_fn("monkey")
+    >>> mock("monkey")
     Traceback (most recent call last):
     ...
     RuntimeError: Boom!
@@ -46,15 +82,15 @@ def when(mock_fn):
     You can use matchers to wildcard arguments when matching calls arguments for example 'Any':
     
     >>> from matchers import Any
-    >>> mock_fn = Mock()
-    >>> when(mock_fn).called_with(100, Any()).then("hello")
+    >>> mock = Mock()
+    >>> when(mock).called_with(100, Any()).then("hello")
     <BLANKLINE>
-    >>> mock_fn(100, "monkey")
+    >>> mock(100, "monkey")
     'hello'
-    >>> mock_fn(100, { "key" : 1000 })
+    >>> mock(100, { "key" : 1000 })
     'hello'
     
-    See the matchers module for more info.
+    See mockextras.matchers for more info.
     """
     class ListSeq(_Sequence):
         def __init__(self):

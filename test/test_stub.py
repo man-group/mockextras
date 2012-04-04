@@ -1,12 +1,6 @@
-from mockextras.stub import stub, seq, _Sequence, stub2
+from mockextras.stub import stub, seq, _Sequence
 from mock import Mock, sentinel, patch, call
 import pytest
-
-
-def test_seq_empty():
-    nxt = seq()
-    with pytest.raises(StopIteration):
-        nxt()
 
 
 def test_seq_empty_list():
@@ -26,15 +20,6 @@ def test_seq_empty_generator():
     with pytest.raises(StopIteration):
         nxt()
 
-
-def test_seq():
-    nxt = seq(sentinel.val1, sentinel.val2, sentinel.val3)
-    assert nxt() == sentinel.val1
-    assert nxt() == sentinel.val2
-    assert nxt() == sentinel.val3
-    with pytest.raises(StopIteration):
-        nxt()
-        
 
 def test_seq_list():
     nxt = seq([sentinel.val1, sentinel.val2, sentinel.val3])
@@ -64,7 +49,7 @@ def test_seq_generator():
 
 
 def test_seq_raises_exceptions():    
-    nxt = seq(sentinel.val1, RuntimeError, RuntimeError(sentinel.val2), sentinel.val3)
+    nxt = seq([sentinel.val1, RuntimeError, RuntimeError(sentinel.val2), sentinel.val3])
     assert nxt() == sentinel.val1
     
     with pytest.raises(RuntimeError):
@@ -170,11 +155,11 @@ def test_stub_switches_on_args():
         
 def test_stub_sequence_of_results():
     mock_fn = Mock()
-    mock_fn.side_effect = stub((call(sentinel.argfoo), seq(sentinel.foo,
-                                                           sentinel.bar,
-                                                           RuntimeError,
-                                                           RuntimeError(sentinel.boom),
-                                                           sentinel.all_ok_now)))
+    mock_fn.side_effect = stub((call(sentinel.argfoo), sentinel.foo,
+                                                       sentinel.bar,
+                                                       RuntimeError,
+                                                       RuntimeError(sentinel.boom),
+                                                       sentinel.all_ok_now))
     
     assert mock_fn(sentinel.argfoo) == sentinel.foo
     
@@ -196,47 +181,26 @@ def test_stub_sequence_of_results():
         mock_fn(sentinel.argfoo)
         
 
-def test_stub2_no_args():
-    with patch("mockextras.stub._Stub") as mock_stub:
-        stub2()
-    mock_stub.assert_called_once_with()        
-
-
-def test_stub2_errors():
-    with pytest.raises(RuntimeError):
-        stub2(call())
+def test_stub_sequence_of_results_from_iterator():
+    mock_fn = Mock()
+    results = iter([sentinel.foo, sentinel.bar, RuntimeError, RuntimeError(sentinel.boom), sentinel.all_ok_now])
+    mock_fn.side_effect = stub((call(sentinel.argfoo), seq(results)))
+    
+    assert mock_fn(sentinel.argfoo) == sentinel.foo
+    
+    assert mock_fn(sentinel.argfoo) == sentinel.bar
     
     with pytest.raises(RuntimeError):
-        stub2(sentinel.call, sentinel.value)
-
-    with pytest.raises(RuntimeError):
-        stub2(call(sentinel.a), sentinel.value, call(sentinel.b))
+        mock_fn(sentinel.argfoo)
+        
+    try:
+        mock_fn(sentinel.argfoo)
+    except RuntimeError as e:
+        assert e.message == sentinel.boom
+    else:
+        assert False
+        
+    assert mock_fn(sentinel.argfoo) == sentinel.all_ok_now
     
-    with pytest.raises(RuntimeError):
-        stub2(sentinel.call, sentinel.value)
-    
-    with pytest.raises(RuntimeError):
-        stub2(sentinel.call1, sentinel.value1, sentinel.call2, sentinel.value2)
-    
-    with pytest.raises(RuntimeError):
-        stub2(sentinel.call, sentinel.value)
-    
-    with pytest.raises(RuntimeError):
-        stub2(sentinel.call1, sentinel.value1, sentinel.call2, sentinel.value2)
-    
-    with pytest.raises(RuntimeError):
-        stub2(sentinel.value, call(sentinel.a, sentinel.b))
-    
-    with pytest.raises(RuntimeError):
-        stub2(call(sentinel.a), call(sentinel.b), call(sentinel.c, sentinel.value))
-
-
-def test_stub2_good_args():
-    with patch("mockextras.stub._Stub") as mock_stub:
-        stub2(call(sentinel.a, sentinel.b), sentinel.value)
-    mock_stub.assert_called_once_with((call(sentinel.a, sentinel.b), sentinel.value))
-
-    with patch("mockextras.stub._Stub") as mock_stub:
-        stub2(call(sentinel.a), sentinel.value1, call(sentinel.b), sentinel.value1)
-    mock_stub.assert_called_once_with((call(sentinel.a), sentinel.value1),
-                                      (call(sentinel.b), sentinel.value1))
+    with pytest.raises(StopIteration):
+        mock_fn(sentinel.argfoo)
