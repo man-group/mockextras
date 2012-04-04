@@ -1,0 +1,2 @@
+include LICENSE.txt tests/*.py
+recursive-include *.txt *.py

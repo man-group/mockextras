@@ -17,12 +17,39 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1333489114708</id>
+			<id>1333581748186</id>
 			<name></name>
 			<type>26</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-__pycache__</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1333581748192</id>
+			<name></name>
+			<type>10</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-build</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1333581748197</id>
+			<name></name>
+			<type>10</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-dist</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1333581748202</id>
+			<name></name>
+			<type>6</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-MANIFEST</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>
