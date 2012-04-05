@@ -19,21 +19,21 @@ setup(name = "mockextras",
     url = "https://github.com/burrowsa/mockextras",
     packages = ['mockextras'],
     license = "BSD",
-    long_description = """The mockextras library is designed to be used with the mock library by Michael Ford 
+    long_description = """The mockextras library is designed to be used with the mock library by Michael Foord 
 (http://www.voidspace.org.uk/python/mock/). mockextras adds a number of features that
 are found in other mocking libraries namely:
 
 * matchers
 * stubs
 * a fluent API for the configuration of stubs""",
-    classifiers = ["Classifier: Development Status :: 2 - Pre-Alpha",
-"Classifier: Environment :: Console",
-"Classifier: Intended Audience :: Developers",
-"Classifier: License :: OSI Approved :: BSD License",
-"Classifier: Programming Language :: Python",
-"Classifier: Programming Language :: Python :: 2.7",
-"Classifier: Programming Language :: Python :: Implementation :: CPython",
-"Classifier: Operating System :: OS Independent",
-"Classifier: Topic :: Software Development :: Libraries",
-"Classifier: Topic :: Software Development :: Libraries :: Python Modules",
-"Classifier: Topic :: Software Development :: Testing"]) 
+    classifiers = ["Development Status :: 2 - Pre-Alpha",
+"Environment :: Console",
+"Intended Audience :: Developers",
+"License :: OSI Approved :: BSD License",
+"Programming Language :: Python",
+"Programming Language :: Python :: 2.7",
+"Programming Language :: Python :: Implementation :: CPython",
+"Operating System :: OS Independent",
+"Topic :: Software Development :: Libraries",
+"Topic :: Software Development :: Libraries :: Python Modules",
+"Topic :: Software Development :: Testing"]) 
