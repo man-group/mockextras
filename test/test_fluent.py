@@ -1,5 +1,4 @@
-from mockextras.fluent import when
-from mockextras.matchers import Any
+from mockextras import when, Any
 from mock import Mock, MagicMock, sentinel
 import pytest
 
@@ -7,31 +6,31 @@ import pytest
 def test_when_with_mock():
     mock_fn = Mock()
     when(mock_fn).called_with(sentinel.arg).then(sentinel.result)
-    
+
     assert mock_fn(sentinel.arg) == sentinel.result
-    
-    
+
+
 def test_when_with_magic_mock():
     mock_fn = MagicMock()
     when(mock_fn).called_with(sentinel.arg).then(sentinel.result)
-    
+
     assert mock_fn(sentinel.arg) == sentinel.result
-    
-    
+
+
 def test_can_not_use_when_with_non_mock():
-    mock_fn = lambda x : 10
-    
+    mock_fn = lambda _ : 10
+
     with pytest.raises(RuntimeError):
         when(mock_fn)
-    
-    
+
+
 def test_can_not_use_when_with_mock_that_has_already_got_a_side_effect():
     with pytest.raises(RuntimeError):
-        when(Mock(side_effect=lambda x : 10))
+        when(Mock(side_effect=lambda _ : 10))
 
     with pytest.raises(RuntimeError):
         when(Mock(side_effect=[1, 2, 3, 4]))
-    
+
 
 def test_when_with_any():
     mock_fn = Mock()
@@ -39,7 +38,7 @@ def test_when_with_any():
     when(mock_fn).called_with(sentinel.arg1, Any()).then(sentinel.result2)
     when(mock_fn).called_with(sentinel.arg2, Any(list)).then(sentinel.result3)
     when(mock_fn).called_with(sentinel.arg2, Any(str)).then(sentinel.result4)
-    
+
     assert mock_fn(sentinel.arg1) == sentinel.result1
     assert mock_fn(sentinel.arg2) == sentinel.result1
     assert mock_fn("hello") == sentinel.result1
@@ -61,7 +60,7 @@ def test_when_call_then_return():
     when(mock_fn).called_with(sentinel.arg1, sentinel.arg1).then(sentinel.result4)
     when(mock_fn).called_with(sentinel.arg1, other=sentinel.other).then(sentinel.result5)
     when(mock_fn).called_with(x=sentinel.x, y=sentinel.y).then(sentinel.result6)
-    
+
     assert mock_fn() == sentinel.result0
     assert mock_fn(sentinel.arg1) == sentinel.result1
     assert mock_fn(sentinel.arg2) == sentinel.result2
@@ -74,7 +73,7 @@ def test_when_call_then_return():
 def test_when_call_then__return_single():
     mock_fn = Mock()
     when(mock_fn).called_with(sentinel.arg1).then(sentinel.result1)
-    
+
     assert mock_fn(sentinel.arg1) == sentinel.result1
     assert mock_fn(sentinel.arg1) == sentinel.result1
 
@@ -84,7 +83,7 @@ def test_when_call_then_return_multiple():
     when(mock_fn).called_with(sentinel.arg1).then(sentinel.result1)\
                                             .then(sentinel.result2)\
                                             .then(sentinel.result3)
-                                            
+
     assert mock_fn(sentinel.arg1) == sentinel.result1
     assert mock_fn(sentinel.arg1) == sentinel.result2
     assert mock_fn(sentinel.arg1) == sentinel.result3
@@ -104,49 +103,49 @@ def test_when_call_then_raise():
     when(mock_fn).called_with(sentinel.arg1, sentinel.arg1).then(TestException(sentinel.exception4))
     when(mock_fn).called_with(sentinel.arg1, other=sentinel.other).then(TestException(sentinel.exception5))
     when(mock_fn).called_with(x=sentinel.x, y=sentinel.y).then(TestException(sentinel.exception6))
-    
+
     try:
         mock_fn()
     except TestException as e:
         assert e.message == sentinel.exception0
     else:
         assert False
-        
+
     try:
         mock_fn(sentinel.arg1)
     except TestException as e:
         assert e.message == sentinel.exception1
     else:
         assert False
-        
+
     try:
         mock_fn(sentinel.arg2)
     except TestException as e:
         assert e.message == sentinel.exception2
     else:
         assert False
-        
+
     try:
         mock_fn(sentinel.arg1, sentinel.arg2)
     except TestException as e:
         assert e.message == sentinel.exception3
     else:
         assert False
-        
+
     try:
         mock_fn(sentinel.arg1, sentinel.arg1)
     except TestException as e:
         assert e.message == sentinel.exception4
     else:
         assert False
-        
+
     try:
         mock_fn(sentinel.arg1, other=sentinel.other)
     except TestException as e:
         assert e.message == sentinel.exception5
     else:
         assert False
-        
+
     try:
         mock_fn(x=sentinel.x, y=sentinel.y)
     except TestException as e:
@@ -158,14 +157,14 @@ def test_when_call_then_raise():
 def test_when_call_then_raise_single():
     mock_fn = Mock()
     when(mock_fn).called_with(sentinel.arg1).then(TestException(sentinel.exception1))
-    
+
     try:
         mock_fn(sentinel.arg1)
     except TestException as e:
         assert e.message == sentinel.exception1
     else:
         assert False
-    
+
     with pytest.raises(TestException):
         mock_fn(sentinel.arg1)
 
@@ -182,14 +181,14 @@ def test_when_call_then_raise_multiple():
         assert e.message == sentinel.exception1
     else:
         assert False
-        
+
     try:
         mock_fn(sentinel.arg1)
     except TestException as e:
         assert e.message == ""
     else:
         assert False
-        
+
     try:
         mock_fn(sentinel.arg1)
     except TestException as e:
@@ -209,13 +208,13 @@ def test_when_call_then_mixed():
                                             .then(sentinel.result3)
 
     assert mock_fn(sentinel.arg1) == sentinel.result1
-        
+
     with pytest.raises(TestException):
         mock_fn(sentinel.arg1)
 
     with pytest.raises(TestException):
         mock_fn(sentinel.arg1)
-        
+
     assert mock_fn(sentinel.arg1) == sentinel.result3
     assert mock_fn(sentinel.arg1) == sentinel.result3
 
@@ -223,7 +222,7 @@ def test_when_call_then_mixed():
 def test_when_missing_case():
     mock_fn = Mock()
     when(mock_fn).called_with(sentinel.arg1).then(sentinel.result1)
-    
+
     with pytest.raises(KeyError):
         mock_fn(sentinel.arg2)
 
@@ -235,7 +234,7 @@ def test_duplicate_called_with_statements_second_ignored():
 
     assert 'monkey' == mock(100, 200)
     assert 'hello' != mock(100, 200)
-        
+
 
 def test_most_general_last():
     mock = Mock()

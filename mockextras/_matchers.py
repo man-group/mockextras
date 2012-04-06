@@ -9,50 +9,13 @@
 # Released subject to the BSD License
 # Please see https://github.com/burrowsa/mockextras/blob/master/LICENSE.txt
 
-
-"""mockextras.matchers provides matchers that act as wildcards when testing call arguments.
-
-for example, you can use a matcher, such as Any, when defining a stub:
-
->>> from mock import Mock, call
->>> from mockextras.stub import stub
->>> mock = Mock()
->>> mock.side_effect = stub((call("hello", "world"), 100),
-...                         (call("bye bye", Any()), 200))
->>> mock("bye bye", "world")
-200
->>> mock("bye bye", "Fred")
-200
->>> mock("bye bye", range(100))
-200
->>> mock("bye bye", { 'a' : 1000, 'b' : 2000})
-200
-
-or when asserting call arguments:
-
->>> from mock import Mock
->>> mock = Mock()
->>> mock("bye bye", "world")
-<Mock name='mock()' id='...'>
->>> mock.assert_called_once_with("bye bye", Any())
-
->>> mock("bye bye", "Fred")
-<Mock name='mock()' id='...'>
->>> assert mock.call_args_list == [call("bye bye", "world"),
-...                                call("bye bye", Any())]
-
-
-The following matchers are defined in this module:
-    * Any
-    * Contains
-    * AnyOf
-
-See their documentation for more info.
-"""
+__all__ = ['Any', 'Contains', 'AnyOf']
 
 
 class Any(object):
-    """The Any matcher will match any object. 
+    """Matchers act as wildcards when defining a stub or when asserting call arguments.
+    
+    The Any matcher will match any object. 
     
     >>> whatever = Any()
     >>> assert whatever == 'hello'
@@ -70,7 +33,7 @@ class Any(object):
     Any can be used when specifying stubs:
     
     >>> from mock import Mock, call
-    >>> from mockextras.stub import stub
+    >>> from mockextras import stub
     >>> mock = Mock()
     >>> mock.side_effect = stub((call("hello", "world"), 100),
     ...                         (call("bye bye", Any()), 200))
@@ -98,19 +61,21 @@ class Any(object):
     """
     def __init__(self, cls=object):
         self._cls = cls
-    
+
     def __eq__(self, other):
         return isinstance(other, self._cls)
 
     def __ne__(self, other):
         return not self.__eq__(other)
-        
+
     def __repr__(self):
         return 'Any(%s)' % ('' if self._cls is object else self._cls)
-    
-    
+
+
 class Contains(object):
-    """The Contains matcher will match objects that contain the given value or substring.
+    """Matchers act as wildcards when defining a stub or when asserting call arguments.
+    
+    The Contains matcher will match objects that contain the given value or substring.
     
     >>> contains_five = Contains(5)
     >>> assert contains_five == range(10)
@@ -123,7 +88,7 @@ class Contains(object):
     Contains can be used when specifying stubs:
     
     >>> from mock import Mock, call
-    >>> from mockextras.stub import stub
+    >>> from mockextras import stub
     >>> mock = Mock()
     >>> mock.side_effect = stub((call("hello", "world"), 100),
     ...                         (call("bye bye", Contains('monkey')), 200))
@@ -145,19 +110,21 @@ class Contains(object):
     """
     def __init__(self, value):
         self._value = value
-    
+
     def __eq__(self, other):
         return self._value in other
 
     def __ne__(self, other):
         return not self.__eq__(other)
-    
+
     def __repr__(self):
         return 'Contains(%r)' % self._value
 
 
 class AnyOf(object):
-    """The AnyOf matcher will ....
+    """Matchers act as wildcards when defining a stub or when asserting call arguments.
+    
+    The AnyOf matcher will ....
     
     >>> is_a_small_prime = AnyOf(2,3,5,7,11,13)
     >>> assert is_a_small_prime == 3
@@ -166,7 +133,7 @@ class AnyOf(object):
     AnyOf can be used when specifying stubs:
     
     >>> from mock import Mock, call
-    >>> from mockextras.stub import stub
+    >>> from mockextras import stub
     >>> mock = Mock()
     >>> mock.side_effect = stub((call("hello"), 100),
     ...                         (call(AnyOf('monkey', 'donkey', 'badger')), 200))
@@ -188,12 +155,12 @@ class AnyOf(object):
     """
     def __init__(self, *args):
         self._set = set(args)
-    
+
     def __eq__(self, other):
         return other in self._set
 
     def __ne__(self, other):
         return not self.__eq__(other)
-    
+
     def __repr__(self):
         return 'AnyOf(%s)' % ', '.join(map(repr, self._set))

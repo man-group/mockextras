@@ -9,23 +9,17 @@
 # Released subject to the BSD License
 # Please see https://github.com/burrowsa/mockextras/blob/master/LICENSE.txtfrom mock import _is_exception, call, _Call
 
-
-"""mockextras.stub provides an implementation of stubs that can be used stand-alone or with mock.
-
-See stub() and seq() for more information.
-"""
-
-
+from ._matchers import __all__ as matchers_all
 from mock import _is_exception, call
-
+from os import linesep
 
 __all__ = ['seq', 'stub']
-    
-    
+
+
 class _Sequence(object):
     def __init__(self, iterable):
         self._iterator = iter(iterable)
-        
+
     def __call__(self):
         retval = next(self._iterator)
         if _is_exception(retval):
@@ -34,7 +28,7 @@ class _Sequence(object):
 
 
 def seq(iterable):
-    """Used define a sequence of return values for a stub based on an iterable, such as a container:
+    """Used to define a sequence of return values for a stub based on an iterable, such as a container:
     
     >>> from mock import Mock, call 
     >>> l = range(1, 5)
@@ -69,7 +63,7 @@ class _Stub(object):
             if key == k:
                 return value
         raise KeyError(k)
-    
+
     def __call__(self, *args, **kwargs):
         obj = self._lookup(call(*args, **kwargs))
         if _is_exception(obj):
@@ -80,7 +74,10 @@ class _Stub(object):
 
 
 def stub(*args):
-    """Makes stubs that can be used stand-alone or with mock.
+    return _Stub(*args)
+
+
+stub.__doc__ = """Makes stubs that can be used stand-alone or with mock.
 
 Stubs are dumb functions, using in testing, they do no processing but they can take arguments and return 
 predefined results.
@@ -146,7 +143,7 @@ specifications ahead of more general ones.
 
 For example:
 
->>> from mockextras.matchers import Any
+>>> from mockextras import Any
 >>> fn = stub((call(100, 200),   "monkey"),
 ...           (call(100, Any()), "hello"))
 >>> fn(100, 200)
@@ -158,6 +155,8 @@ For example:
 >>> fn(100, { "key" : 1000 })
 'hello'
 
-See mockextras.matchers for more info on available matchers.
-"""
-    return _Stub(*args)
+The following matchers are available in mockextras:
+%s
+
+See their documentation for more info.
+""" % linesep.join('  * %s' % m for m in matchers_all)
