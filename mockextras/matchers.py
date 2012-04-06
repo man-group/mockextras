@@ -110,8 +110,7 @@ class Any(object):
     
     
 class Contains(object):
-    """The Contains matcher will match objects that contain the given value or
-    substring.
+    """The Contains matcher will match objects that contain the given value or substring.
     
     >>> contains_five = Contains(5)
     >>> assert contains_five == range(10)
@@ -158,11 +157,37 @@ class Contains(object):
 
 
 class AnyOf(object):
+    """The AnyOf matcher will ....
+    
+    >>> is_a_small_prime = AnyOf(2,3,5,7,11,13)
+    >>> assert is_a_small_prime == 3
+    >>> assert is_a_small_prime != 4
+
+    AnyOf can be used when specifying stubs:
+    
+    >>> from mock import Mock, call
+    >>> from mockextras.stub import stub
+    >>> mock = Mock()
+    >>> mock.side_effect = stub((call("hello"), 100),
+    ...                         (call(AnyOf('monkey', 'donkey', 'badger')), 200))
+    >>> mock("monkey")
+    200
+    
+    or when asserting call arguments:
+    
+    >>> from mock import Mock
+    >>> mock = Mock()
+    >>> mock("donkey")
+    <Mock name='mock()' id='...'>
+    >>> mock.assert_called_once_with(AnyOf('monkey', 'donkey', 'badger'))
+    
+    >>> mock("monkey")
+    <Mock name='mock()' id='...'>
+    >>> assert mock.call_args_list == [call("donkey"),
+    ...                                call(AnyOf('monkey', 'donkey', 'badger'))]
+    """
     def __init__(self, *args):
-        if len(args) > 1 or (len(args) > 0 and (not hasattr(args[0], '__iter__') or isinstance(args[0], basestring))):
-            self._set = set(args)
-        else:
-            self._set = set(*args)
+        self._set = set(args)
     
     def __eq__(self, other):
         return other in self._set
@@ -171,4 +196,4 @@ class AnyOf(object):
         return not self.__eq__(other)
     
     def __repr__(self):
-        return 'AnyOf(%r)' % self._set
+        return 'AnyOf(%s)' % ', '.join(map(repr, self._set))

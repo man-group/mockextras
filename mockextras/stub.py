@@ -10,24 +10,9 @@
 # Please see https://github.com/burrowsa/mockextras/blob/master/LICENSE.txtfrom mock import _is_exception, call, _Call
 
 
-"""mockextras.stub provides an implementation of stubs that can be used with mock.
-You stub a mock by setting its side_effect:
+"""mockextras.stub provides an implementation of stubs that can be used stand-alone or with mock.
 
->>> from mock import Mock, call
->>> mock = Mock()
->>> mock.side_effect = stub((call("hello"), "world"),
-...                         (call("foo"),   1,2,4,8),
-...                         (call("bar"),   seq(xrange(100))))
->>> mock("hello")
-'world'
->>> mock("foo")
-1
->>> mock("foo")
-2
->>> mock("foo")
-4
-
-See stub() and seq() for more info.
+See stub() and seq() for more information.
 """
 
 
@@ -49,28 +34,27 @@ class _Sequence(object):
 
 
 def seq(iterable):
-    """Used in conjunction with stub to define a sequence of return values for a stub
-    based on an iterable, such as a container:
+    """Used define a sequence of return values for a stub based on an iterable, such as a container:
     
     >>> from mock import Mock, call 
     >>> l = range(1, 5)
-    >>> mock = Mock(side_effect = stub((call(), seq(l))))
-    >>> mock()
+    >>> fn = stub((call(), seq(l)))
+    >>> fn()
     1
-    >>> mock()
+    >>> fn()
     2
-    >>> mock()
+    >>> fn()
     3
 
     or a generator:
 
     >>> i = xrange(1, 5)
-    >>> mock = Mock(side_effect = stub((call(), seq(i))))
-    >>> mock()
+    >>> fn = stub((call(), seq(i)))
+    >>> fn()
     1
-    >>> mock()
+    >>> fn()
     2
-    >>> mock()
+    >>> fn()
     3
     """
     return _Sequence(iterable)
@@ -78,7 +62,7 @@ def seq(iterable):
 
 class _Stub(object):
     def __init__(self, *args):
-        self._results = tuple( (conf[0], seq(conf[1:])) if len(conf) > 2 else conf for conf in args )
+        self._results = tuple((conf[0], seq(conf[1:])) if len(conf) > 2 else conf for conf in args)
 
     def _lookup(self, k):
         for key, value in self._results:
@@ -96,71 +80,84 @@ class _Stub(object):
 
 
 def stub(*args):
-    """Creates a stub function that can be used as the side_effect of a mock.
-    The stub is configured so it returns different values depending on the
-    arguments passed to it:
-    
-    >>> from mock import Mock, call
-    >>> mock = Mock()
-    >>> mock.side_effect = stub((call("hello"), "world"),
-    ...                         (call("foo"),   "bar"))
-    >>> mock("hello")
-    'world'
-    >>> mock("foo")
-    'bar'
-    
-    or you can specify an exception to raise:
-    
-    >>> from mock import Mock, call
-    >>> mock = Mock()
-    >>> mock.side_effect = stub((call("hello"),   "world"),
-    ...                         (call("bye bye"), ValueError),
-    ...                         (call("foo"),     IndexError('foo')))
-    >>> mock("bye bye")
-    Traceback (most recent call last):
-    ...
-    ValueError
-    >>> mock("foo")
-    Traceback (most recent call last):
-    ...
-    IndexError: foo
+    """Makes stubs that can be used stand-alone or with mock.
 
-    You can specify a sequence of return values, for example:
-    
-    >>> from mock import Mock, call
-    >>> mock = Mock()
-    >>> mock.side_effect = stub((call("hello"), "street", "world", "universe"))
-    >>> mock("hello")
-    'street'
-    >>> mock("hello")
-    'world'
-    >>> mock("hello")
-    'universe'
-    
-    You can use seq() to specify a sequence of return values based on an iterable, for example:
-    
-    >>> from mock import Mock, call
-    >>> mock = Mock()
-    >>> mock.side_effect = stub((call("hello"), seq(xrange(100))))
-    >>> mock("hello")
-    0
-    >>> mock("hello")
-    1
-    >>> mock("hello")
-    2
-    
-    See seq() for more info.
-    
-    You can use matchers to wildcard arguments when matching calls arguments for example 'Any':
-    
-    >>> from matchers import Any
-    >>> mockn = Mock()
-    >>> mock.side_effect = stub((call(100, Any()), "hello"))
-    >>> mock(100, "monkey")
-    'hello'
-    >>> mock(100, { "key" : 1000 })
-    'hello'
-    
-    See mockextras.matchers for more info.
-    """
+Stubs are dumb functions, using in testing, they do no processing but they can take arguments and return 
+predefined results.
+
+A stub is configured so it returns different values depending on the arguments passed to it. You configure
+it with one or more pairs of call arguments and results then when the stub is called with a given set of call
+arguments the corresponding result is returned. If the result is an Exception the result is raised. If more
+than one result is specified the results will be returned/raised one at a time over successive calls to the
+stub. If you wish to specify successive results using an iterable you must wrap it with seq().
+
+You can use a stub in place of a function, for example:
+
+>>> from mock import call
+>>> fn = stub((call("hello"), "world"),
+...           (call("foo"),   1, 2, 4, 8),
+...           (call("bar"),   seq(xrange(100))),
+...           (call("baz"),   KeyError('baz')),
+...           (call("boom"),  100, RuntimeError, 200, ValueError("boom")))
+>>> fn("hello")
+'world'
+>>> fn("foo")
+1
+>>> fn("foo")
+2
+>>> fn("foo")
+4
+
+Or you can combine it with a mock by setting it as the side_effect. This has the advantage that you can later
+verify the function was called as expected.
+
+>>> from mock import Mock, call
+>>> mock = Mock()
+>>> mock.side_effect = stub((call("hello"), "world"),
+...                         (call("foo"),   1,2,4,8))
+>>> mock("hello")
+'world'
+>>> mock("foo")
+1
+>>> mock("foo")
+2
+>>> mock("foo")
+4
+>>> assert mock.call_args_list == [call("hello"), call("foo"), call("foo"), call("foo")]
+
+Also you can use stubs as methods on Mock objects. Whether you use them directly as the methods or as the
+side_effect of a mock method depends on whether you want to verify the method calls.
+
+>>> mock_obj = Mock(my_first_method=stub((call(50), 100), (call(100), 200)))
+>>> mock_obj.my_second_method = stub((call("a"), "aa"), (call("b"), "bb"))
+>>> mock_obj.my_third_method.side_effect = stub((call(123), 456), (call(789), 54321))
+
+>>> mock_obj.my_first_method(50)
+100
+>>> mock_obj.my_second_method('b')
+'bb'
+>>> mock_obj.my_third_method(123)
+456
+>>> assert mock_obj.mock_calls == [call.my_third_method(123)] # only the mocked call is recorded
+
+You can use matchers, such as Any(), as wild-card arguments when matching call arguments. The stub's
+configuration is searched in the order if was specified so you can put more specific call argument
+specifications ahead of more general ones.
+
+For example:
+
+>>> from mockextras.matchers import Any
+>>> fn = stub((call(100, 200),   "monkey"),
+...           (call(100, Any()), "hello"))
+>>> fn(100, 200)
+'monkey'
+>>> fn(100, 300)
+'hello'
+>>> fn(100, "monkey")
+'hello'
+>>> fn(100, { "key" : 1000 })
+'hello'
+
+See mockextras.matchers for more info on available matchers.
+"""
     return _Stub(*args)

@@ -1,4 +1,4 @@
-from mockextras.matchers import Any, Contains
+from mockextras.matchers import Any, Contains, AnyOf
 
 
 def test_any_equality():
@@ -64,3 +64,31 @@ def test_pretty_print_contains():
     b = Contains('hello')
     assert repr(b) == "Contains('hello')"
     assert str(b) == "Contains('hello')"
+    
+
+def test_any_of_equality():
+    assert AnyOf() != "hello"
+    assert AnyOf("fox") != "hello"
+    assert AnyOf("fox", "badger", "monkey") != "hello"
+    assert AnyOf('hello') == "hello"
+    assert AnyOf('hello', 'world', 'hoorah') == "hello"
+    
+    assert "hello" != AnyOf()
+    assert "hello" != AnyOf("fox")
+    assert "hello" != AnyOf("fox", "badger", "monkey")
+    assert "hello" == AnyOf('hello')
+    assert "hello" == AnyOf('hello', 'world', 'hoorah')
+    
+
+def test_pretty_print_any_of():
+    a = AnyOf()
+    assert repr(a) == "AnyOf()"
+    assert str(a) == "AnyOf()"
+    
+    a = AnyOf(10)
+    assert repr(a) == "AnyOf(10)"
+    assert str(a) == "AnyOf(10)"
+    
+    b = AnyOf(10, 20, 30)
+    assert repr(b) == "AnyOf(10, 20, 30)"
+    assert str(b) == "AnyOf(10, 20, 30)"

@@ -226,3 +226,23 @@ def test_when_missing_case():
     
     with pytest.raises(KeyError):
         mock_fn(sentinel.arg2)
+
+
+def test_duplicate_called_with_statements_second_ignored():
+    mock = Mock()
+    when(mock).called_with(100, 200).then("monkey")
+    when(mock).called_with(100, 200).then("hello")
+
+    assert 'monkey' == mock(100, 200)
+    assert 'hello' != mock(100, 200)
+        
+
+def test_most_general_last():
+    mock = Mock()
+    when(mock).called_with(100, 200).then("monkey")
+    when(mock).called_with(100, Any()).then("hello")
+
+    assert 'monkey' == mock(100, 200)
+    assert 'hello' == mock(100, 300)
+    assert 'hello' == mock(100, "monkey")
+    assert 'hello' == mock(100, { "key" : 1000 })

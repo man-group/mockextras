@@ -12,23 +12,6 @@
 
 """mockextras.fluent provides a fluent API for specifying stubs.
 
->>> from mock import Mock
->>> mock = Mock()
->>> when(mock).called_with("hello").then("world")
-<BLANKLINE>
->>> when(mock).called_with("foo").then("bar")
-<BLANKLINE>
->>> when(mock).called_with(100, 200).then(RuntimeError("Boom!"))
-<BLANKLINE>
->>> mock("hello")
-'world'
->>> mock("foo")
-'bar'
->>> mock(100, 200)
-Traceback (most recent call last):
-...
-RuntimeError: Boom!
-
 See when() for more info. 
 """
 
@@ -40,8 +23,8 @@ from .stub import _Sequence, _Stub
 def when(mock_fn):
     """Provides a fluent API for specifying stubs.
     
-    For example, you can specify different values to return or exceptions to raise 
-    based on the arguments passed into the called_with:
+    For example, you can specify different values to return or exceptions to raise based on the arguments
+    passed into the called_with:
     
     >>> from mock import Mock
     >>> mock = Mock()
@@ -65,8 +48,8 @@ def when(mock_fn):
     
     >>> mock = Mock()
     >>> when(mock).called_with("monkey").then("weezel")\\
-    ...                                    .then("badger")\\
-    ...                                    .then(RuntimeError("Boom!"))
+    ...                                 .then("badger")\\
+    ...                                 .then(RuntimeError("Boom!"))
     <BLANKLINE>
     >>> mock("monkey")
     'weezel'
@@ -79,12 +62,20 @@ def when(mock_fn):
     
     The last value is repeated for any subsequent calls.
     
-    You can use matchers to wildcard arguments when matching calls arguments for example 'Any':
+    You can use matchers, such as Any(), as wild-card arguments when matching call arguments. The stub's
+    configuration is searched in the order it was specified so you can put more specific call argument
+    specifications ahead of more general ones. For example:
     
-    >>> from matchers import Any
+    >>> from mockextras.matchers import Any
     >>> mock = Mock()
+    >>> when(mock).called_with(100, 200).then("monkey")
+    <BLANKLINE>
     >>> when(mock).called_with(100, Any()).then("hello")
     <BLANKLINE>
+    >>> mock(100, 200)
+    'monkey'
+    >>> mock(100, 300)
+    'hello'
     >>> mock(100, "monkey")
     'hello'
     >>> mock(100, { "key" : 1000 })
@@ -127,19 +118,17 @@ def when(mock_fn):
         def __init__(self, results, key):
             self._results = results
             self._key = key
+            self._list = None
     
         def then(self, obj):
-            self._setdefault(self._key, ListSeq()).list.append(obj)
+            if self._list is None:
+                s = ListSeq()
+                self._results.append((self._key, s))
+                self._list = s.list
+            self._list.append(obj)
             return self
     
         def __repr__(self):
             return ""
-        
-        def _setdefault(self, k, default):
-            for key, value in self._results:
-                if key == k:
-                    return value
-            self._results.append((k, default))
-            return default
     
     return When(mock_fn)
