@@ -114,7 +114,7 @@ You can use matchers, such as Any(), as wild-card arguments when matching call a
 configuration is searched in the order it was specified so you can put more specific call argument
 specifications ahead of more general ones. For example:
 
->>> from mockextras.matchers import Any
+>>> from mockextras import Any
 >>> mock = Mock()
 >>> when(mock).called_with(100, 200).then("monkey")
 <BLANKLINE>

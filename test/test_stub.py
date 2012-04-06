@@ -87,7 +87,7 @@ def test_universal_side_effect():
     st = stub()
 
     with patch.object(st, "_lookup") as mock_lookup: #@UndefinedVariable
-        with patch("mockextras.stub.call") as mock_callargs:
+        with patch("mockextras._stub.call") as mock_callargs:
             assert mock_lookup.return_value == st(sentinel.arg1, sentinel.arg2)
 
     mock_callargs.assert_called_once_with(sentinel.arg1, sentinel.arg2)
@@ -98,7 +98,7 @@ def test_stub_exception():
     st = stub()
 
     with patch.object(st, "_lookup", return_value=RuntimeError) as mock_lookup: #@UndefinedVariable
-        with patch("mockextras.stub.call") as mock_callargs:
+        with patch("mockextras._stub.call") as mock_callargs:
             with pytest.raises(RuntimeError):
                 st(sentinel.arg1, sentinel.arg2)
 
@@ -110,8 +110,8 @@ def test_stub_sequence():
     st = stub()
 
     with patch.object(st, "_lookup") as mock_lookup: #@UndefinedVariable
-        with patch("mockextras.stub.call") as mock_callargs:
-            with patch("mockextras.stub.isinstance", create=True, return_value=True) as mock_isinstance:
+        with patch("mockextras._stub.call") as mock_callargs:
+            with patch("mockextras._stub.isinstance", create=True, return_value=True) as mock_isinstance:
                 assert mock_lookup.return_value.return_value == st(sentinel.arg1, sentinel.arg2)
 
     mock_isinstance.assert_called_once_with(mock_lookup.return_value, _Sequence)
@@ -124,7 +124,7 @@ def test_stub_missing_case():
     st = stub()
 
     with patch.object(st, "_lookup", side_effect=KeyError) as mock_lookup: #@UndefinedVariableF
-        with patch("mockextras.stub.call") as mock_callargs:
+        with patch("mockextras._stub.call") as mock_callargs:
             with pytest.raises(KeyError):
                 assert st(sentinel.arg1, sentinel.arg2)
 
