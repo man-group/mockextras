@@ -4,3 +4,5 @@ __pycache__
 dist
 build
 MANIFEST
+html
+org.eclipse.core.resources.prefs
