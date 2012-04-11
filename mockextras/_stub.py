@@ -60,7 +60,8 @@ class _Stub(object):
 
     def _lookup(self, k):
         for key, value in self._results:
-            if key == k:
+            # Some classes don't play by the rules so try the equals both ways around
+            if key == k or k == key:
                 return value
         raise KeyError(k)
 

@@ -1,7 +1,8 @@
-from mockextras import stub, seq
+from mockextras import stub, seq, Any
 from mockextras._stub import _Sequence
 from mock import Mock, sentinel, patch, call
 import pytest
+from datetime import datetime
 
 
 def test_seq_empty_list():
@@ -205,3 +206,27 @@ def test_stub_sequence_of_results_from_iterator():
 
     with pytest.raises(StopIteration):
         mock_fn(sentinel.argfoo)
+
+
+def test_stub_arg_matching():
+    mock_fn = Mock()
+    mock_fn.side_effect = stub((call(), sentinel.res0),
+                               (call(sentinel.arg1), sentinel.res1),
+                               (call(datetime(1978, 2, 2, 12, 34, 56)), sentinel.res2),
+                               (call(Any()), sentinel.res3),
+                               (call(x=sentinel.argx, y=sentinel.argy), sentinel.res4),
+                               (call(x=sentinel.argx, y=datetime(1978, 2, 2, 12, 34, 56)), sentinel.res5),
+                               (call(x=sentinel.argx, y=Any()), sentinel.res6))
+
+    assert mock_fn() == sentinel.res0
+    assert mock_fn(sentinel.arg1) == sentinel.res1
+    assert mock_fn(Any()) == sentinel.res1
+    assert mock_fn(Any(datetime)) == sentinel.res2
+    assert mock_fn(datetime(1978, 2, 2, 12, 34, 56)) == sentinel.res2
+    assert mock_fn(datetime(1978, 2, 2, 12, 45, 00)) == sentinel.res3
+    assert mock_fn(sentinel.meh) == sentinel.res3
+    assert mock_fn(x=sentinel.argx, y=sentinel.argy) == sentinel.res4
+    assert mock_fn(x=sentinel.argx, y=datetime(1978, 2, 2, 12, 34, 56)) == sentinel.res5
+    assert mock_fn(x=sentinel.argx, y=Any()) == sentinel.res4
+    assert mock_fn(x=sentinel.argx, y=Any(datetime)) == sentinel.res5
+    assert mock_fn(x=sentinel.argx, y=sentinel.meh) == sentinel.res6
