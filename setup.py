@@ -3,7 +3,7 @@
 # Copyright (C) 2012 Andrew Burrows
 # E-mail: burrowsa AT gmail DOT com
 
-# mockextras 0.0.0
+# mockextras 0.0.1
 # https://github.com/burrowsa/mockextras
 
 # Released subject to the BSD License
@@ -11,7 +11,7 @@
 
 if __name__ == "__main__":
     params = dict(name="mockextras",
-        version="0.0.0",
+        version="0.0.1",
         description="Extensions to the mock library",
         author="Andrew Burrows",
         author_email="burrowsa@gmail.com",
@@ -42,6 +42,6 @@ are found in other mocking libraries namely:
     except ImportError:
         from distutils.core import setup
     else:
-        params['install_requires '] = ['mock>=0.8.0']
+        params['install_requires'] = ['mock>=0.8.0']
 
     setup(**params)
