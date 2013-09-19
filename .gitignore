@@ -6,3 +6,4 @@ build
 MANIFEST
 html
 org.eclipse.core.resources.prefs
+mockextras.egg-info
