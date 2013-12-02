@@ -24,7 +24,9 @@ are found in other mocking libraries namely:
 
 * matchers
 * stubs
-* a fluent API for the configuration of stubs""",
+* a fluent API for the configuration of stubs
+
+The documentation is here: http://mockextras.readthedocs.org/""",
         classifiers=["Development Status :: 2 - Pre-Alpha",
                      "Environment :: Console",
                      "Intended Audience :: Developers",

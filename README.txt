@@ -5,3 +5,7 @@ are found in other mocking libraries namely:
 * a fluent API for the configuration of stubs
 * stubs
 * matchers
+
+The egg is available in pypi here: https://pypi.python.org/pypi/mockextras
+and the documentation is here: http://mockextras.readthedocs.org/
+
