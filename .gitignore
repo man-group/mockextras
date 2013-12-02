@@ -4,6 +4,6 @@ __pycache__
 dist
 build
 MANIFEST
-html
+docs/_build/
 org.eclipse.core.resources.prefs
 mockextras.egg-info

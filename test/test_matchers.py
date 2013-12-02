@@ -32,8 +32,8 @@ def test_pretty_print_any():
     assert repr(a) == "Any()"
     assert str(a) == "Any()"
     b = Any(str)
-    assert repr(b) == "Any(<type 'str'>)"
-    assert str(b) == "Any(<type 'str'>)"
+    assert repr(b) == "Any(<type 'str'>)" or repr(b) == "Any(<class 'str'>)"
+    assert str(b) == "Any(<type 'str'>)" or str(b) == "Any(<class 'str'>)"
 
 
 def test_contains_equality():
