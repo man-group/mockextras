@@ -57,12 +57,9 @@ def test_seq_raises_exceptions():
     with pytest.raises(RuntimeError):
         nxt()
 
-    try:
+    with pytest.raises(RuntimeError) as err:
         nxt()
-    except RuntimeError as e:
-        assert e.message == sentinel.val2
-    else:
-        assert False
+    assert str(err.value) == str(sentinel.val2)
 
     assert nxt() == sentinel.val3
 
@@ -147,12 +144,9 @@ def test_stub_switches_on_args():
     with pytest.raises(RuntimeError):
         mock_fn(sentinel.whatever, sentinel.argbang)
 
-    try:
+    with pytest.raises(RuntimeError) as err:
         mock_fn(sentinel.whatever, sentinel.argboom)
-    except RuntimeError as e:
-        assert e.message == sentinel.boom
-    else:
-        assert False
+    assert str(err.value) == str(sentinel.boom)
 
 
 def test_stub_sequence_of_results():
@@ -169,13 +163,10 @@ def test_stub_sequence_of_results():
 
     with pytest.raises(RuntimeError):
         mock_fn(sentinel.argfoo)
-
-    try:
+        
+    with pytest.raises(RuntimeError) as err:
         mock_fn(sentinel.argfoo)
-    except RuntimeError as e:
-        assert e.message == sentinel.boom
-    else:
-        assert False
+    assert str(err.value) == str(sentinel.boom)
 
     assert mock_fn(sentinel.argfoo) == sentinel.all_ok_now
 
@@ -194,13 +185,10 @@ def test_stub_sequence_of_results_from_iterator():
 
     with pytest.raises(RuntimeError):
         mock_fn(sentinel.argfoo)
-
-    try:
+        
+    with pytest.raises(RuntimeError) as err:
         mock_fn(sentinel.argfoo)
-    except RuntimeError as e:
-        assert e.message == sentinel.boom
-    else:
-        assert False
+    assert str(err.value) == str(sentinel.boom)
 
     assert mock_fn(sentinel.argfoo) == sentinel.all_ok_now
 
