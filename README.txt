@@ -7,5 +7,5 @@ are found in other mocking libraries namely:
 * matchers
 
 The egg is available in pypi here: https://pypi.python.org/pypi/mockextras
-and the documentation is here: http://mockextras.readthedocs.org/
+the documentation is here: http://mockextras.readthedocs.org/
 

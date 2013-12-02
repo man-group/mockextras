@@ -11,7 +11,7 @@
 
 if __name__ == "__main__":
     params = dict(name="mockextras",
-        version="0.0.2",
+        version="0.0.3",
         description="Extensions to the mock library",
         author="Andrew Burrows",
         author_email="burrowsa@gmail.com",
@@ -26,7 +26,8 @@ are found in other mocking libraries namely:
 * stubs
 * a fluent API for the configuration of stubs
 
-The documentation is here: http://mockextras.readthedocs.org/""",
+The documentation is here: http://mockextras.readthedocs.org/
+and the source is here: http://github.com/burrowsa/mockextras""",
         classifiers=["Development Status :: 2 - Pre-Alpha",
                      "Environment :: Console",
                      "Intended Audience :: Developers",
