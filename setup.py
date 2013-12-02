@@ -33,12 +33,15 @@ and the source is here: http://github.com/burrowsa/mockextras""",
                      "Intended Audience :: Developers",
                      "License :: OSI Approved :: BSD License",
                      "Programming Language :: Python",
+                     "Programming Language :: Python :: 2.6",
                      "Programming Language :: Python :: 2.7",
+                     "Programming Language :: Python :: 3.2",
+                     "Programming Language :: Python :: 3.3",
                      "Programming Language :: Python :: Implementation :: CPython",
+                     "Programming Language :: Python :: Implementation :: PyPy",
                      "Operating System :: OS Independent",
                      "Topic :: Software Development :: Libraries",
-                     "Topic :: Software Development :: Libraries :: Python Modules",
-                     "Topic :: Software Development :: Testing"])
+                     "Topic :: Software Development :: Libraries :: Python Modules"])
 
     try:
         from setuptools import setup
