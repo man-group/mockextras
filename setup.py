@@ -4,10 +4,10 @@
 # E-mail: burrowsa AT gmail DOT com
 
 # mockextras 0.0.1
-# https://github.com/burrowsa/mockextras
+# https://github.com/ahlmss/mockextras
 
 # Released subject to the BSD License
-# Please see https://github.com/burrowsa/mockextras/blob/master/LICENSE.txt
+# Please see https://github.com/ahlmss/mockextras/blob/master/LICENSE.txt
 
 if __name__ == "__main__":
     params = dict(name="mockextras",
@@ -15,7 +15,7 @@ if __name__ == "__main__":
         description="Extensions to the mock library",
         author="Andrew Burrows",
         author_email="burrowsa@gmail.com",
-        url="https://github.com/burrowsa/mockextras",
+        url="https://github.com/ahlmss/mockextras",
         packages=['mockextras'],
         license="BSD",
         long_description="""The mockextras library is designed to be used with the mock library by Michael Foord 
@@ -27,7 +27,7 @@ are found in other mocking libraries namely:
 * a fluent API for the configuration of stubs
 
 The documentation is here: http://mockextras.readthedocs.org/
-and the source is here: http://github.com/burrowsa/mockextras""",
+and the source is here: http://github.com/ahlmss/mockextras""",
         classifiers=["Development Status :: 2 - Pre-Alpha",
                      "Environment :: Console",
                      "Intended Audience :: Developers",

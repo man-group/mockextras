@@ -4,10 +4,10 @@
 # E-mail: burrowsa AT gmail DOT com
 
 # mockextras 0.0.0
-# https://github.com/burrowsa/mockextras
+# https://github.com/ahlmss/mockextras
 
 # Released subject to the BSD License
-# Please see https://github.com/burrowsa/mockextras/blob/master/LICENSE.txt
+# Please see https://github.com/ahlmss/mockextras/blob/master/LICENSE.txt
 
 __all__ = ['Any', 'Contains', 'AnyOf']
 

@@ -9,3 +9,5 @@ are found in other mocking libraries namely:
 The egg is available in pypi here: https://pypi.python.org/pypi/mockextras
 the documentation is here: http://mockextras.readthedocs.org/
 
+[![Build Status](https://travis-ci.org/ahlmss/mockextras.png?branch=master)](https://travis-ci.org/ahlmss/mockextras)
+
