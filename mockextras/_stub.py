@@ -1,9 +1,9 @@
 # mockextras.stub
 # Matchers and Stubs for mock.
-# Copyright (C) 2012 Andrew Burrows
+# Copyright (C) 2012-2014 Andrew Burrows
 # E-mail: burrowsa AT gmail DOT com
 
-# mockextras 0.0.0
+# mockextras 1.0.0
 # https://github.com/ahlmss/mockextras
 
 # Released subject to the BSD License

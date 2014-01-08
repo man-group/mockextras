@@ -212,3 +212,8 @@ def test_most_general_last():
     assert 'hello' == mock(100, 300)
     assert 'hello' == mock(100, "monkey")
     assert 'hello' == mock(100, { "key" : 1000 })
+
+
+def test_called_with_object_has_empty_string_representation():
+    mock_fn = MagicMock()
+    assert repr(when(mock_fn).called_with(sentinel.arg)) == ""
