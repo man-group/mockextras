@@ -28,7 +28,7 @@ are found in other mocking libraries namely:
 
 The documentation is here: http://mockextras.readthedocs.org/
 and the source is here: http://github.com/ahlmss/mockextras""",
-        classifiers=["Development Status :: 2 - Pre-Alpha",
+        classifiers=["Development Status :: 5 - Production/Stable",
                      "Environment :: Console",
                      "Intended Audience :: Developers",
                      "License :: OSI Approved :: BSD License",
