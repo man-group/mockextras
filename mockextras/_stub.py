@@ -80,7 +80,7 @@ def stub(*args):
 
 stub.__doc__ = """Makes stubs that can be used stand-alone or with mock.
 
-Stubs are dumb functions, using in testing, they do no processing but they can take arguments and return 
+Stubs are dumb functions, used in testing, they do no processing but they can take arguments and return 
 predefined results.
 
 A stub is configured so it returns different values depending on the arguments passed to it. You configure
@@ -139,7 +139,7 @@ side_effect of a mock method depends on whether you want to verify the method ca
 >>> assert mock_obj.mock_calls == [call.my_third_method(123)] # only the mocked call is recorded
 
 You can use matchers, such as Any(), as wild-card arguments when matching call arguments. The stub's
-configuration is searched in the order if was specified so you can put more specific call argument
+configuration is searched in the order it was specified so you can put more specific call argument
 specifications ahead of more general ones.
 
 For example:
