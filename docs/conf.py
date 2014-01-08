@@ -230,7 +230,7 @@ texinfo_documents = [
   ('index', 'mockextras', u'mockextras Documentation',
    u'Andrew Burrows', 'mockextras', 'The mockextras library adds a number of features that are found in other mocking libraries such as a fluent API to mock.',
    'Miscellaneous'),
-]s
+]
 
 # Documents to append as an appendix to all manuals.
 #texinfo_appendices = []
