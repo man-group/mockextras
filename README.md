@@ -8,7 +8,8 @@ are found in other mocking libraries namely:
 
 The documentation is here: http://mockextras.readthedocs.org/
 
-[![Build Status](https://travis-ci.org/ahlmss/mockextras.png?branch=master)](https://travis-ci.org/ahlmss/mockextras) 
+[![Build Status](https://travis-ci.org/ahlmss/mockextras.png?branch=master)](https://travis-ci.org/ahlmss/mockextras)
+[![Coverage Status](https://coveralls.io/repos/ahlmss/mockextras/badge.png?branch=master)](https://coveralls.io/r/ahlmss/mockextras?branch=master)
 [![Downloads](https://pypip.in/d/mockextras/badge.png)](https://pypi.python.org/pypi/mockextras/)
 [![Latest Version](https://pypip.in/v/mockextras/badge.png)](https://pypi.python.org/pypi/mockextras/)
 [![License](https://pypip.in/license/mockextras/badge.png)](https://pypi.python.org/mockextras/)
