@@ -6,8 +6,7 @@ are found in other mocking libraries namely:
 * stubs
 * matchers
 
-The egg is available in pypi here: https://pypi.python.org/pypi/mockextras
-the documentation is here: http://mockextras.readthedocs.org/
+The documentation is here: http://mockextras.readthedocs.org/
 
-[![Build Status](https://travis-ci.org/ahlmss/mockextras.png?branch=master)](https://travis-ci.org/ahlmss/mockextras)
+[![Build Status](https://travis-ci.org/ahlmss/mockextras.png?branch=master)](https://travis-ci.org/ahlmss/mockextras) [![PyPI version](https://badge.fury.io/py/mockextras.png)](http://badge.fury.io/py/mockextras)
 
