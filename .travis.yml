@@ -7,13 +7,13 @@ python:
   - "pypy"
 # command to install dependencies
 install:
-  - pip install .
   - pip install -r requirements.txt
   - pip install coveralls --use-mirrors  # TODO: put these deps in tests_require
   - pip install pytest-cov
   - pip install coverage
 # command to run tests
 script:
+  python setup.py develop
   py.test --cov=mockextras --cov-report=term --verbose
 after_success:
   coveralls --verbose
