@@ -13,7 +13,7 @@ install:
   - pip install coverage
 # command to run tests
 script:
-  python setup.py develop
-  py.test --cov=mockextras --cov-report=term --verbose
+  - python setup.py develop
+  - py.test --cov=mockextras --cov-report=term --verbose
 after_success:
   coveralls --verbose
