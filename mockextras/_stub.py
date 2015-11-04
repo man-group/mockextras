@@ -1,17 +1,24 @@
 # mockextras.stub
 # Matchers and Stubs for mock.
-# Copyright (C) 2012-2014 Andrew Burrows
-# E-mail: burrowsa AT gmail DOT com
+# Copyright (C) 2012-2015 Man AHL
+# E-mail: ManAHLTech AT ahl DOT com
 
 # mockextras 1.0.0
-# https://github.com/ahlmss/mockextras
+# https://github.com/manahl/mockextras
 
 # Released subject to the BSD License
-# Please see https://github.com/ahlmss/mockextras/blob/master/LICENSE.txtfrom mock import _is_exception, call, _Call
+# Please see https://github.com/manahl/mockextras/blob/master/LICENSE.txt
 
 from ._matchers import __all__ as matchers_all
-from mock import _is_exception, call
+try:
+    from unittest.mock import _is_exception, call
+except ImportError:
+    try:
+        from mock.mock import call, _is_exception 
+    except ImportError:
+        from mock import call, _is_exception
 from os import linesep
+
 
 __all__ = ['seq', 'stub']
 
@@ -30,7 +37,11 @@ class _Sequence(object):
 def seq(iterable):
     """Used to define a sequence of return values for a stub based on an iterable, such as a container:
     
-    >>> from mock import Mock, call 
+    >>> try:
+    ...     from unittest.mock Mock, call
+    ... except ImportError:
+    ...     from mock import Mock, call
+    >>>
     >>> l = range(1, 5)
     >>> fn = stub((call(), seq(l)))
     >>> fn()
@@ -91,7 +102,11 @@ stub. If you wish to specify successive results using an iterable you must wrap 
 
 You can use a stub in place of a function, for example:
 
->>> from mock import call
+>>> try:
+...     from unittest.mock call
+... except ImportError:
+...     from mock import call
+>>>
 >>> fn = stub((call("hello"), "world"),
 ...           (call("foo"),   1, 2, 4, 8),
 ...           (call("bar"),   seq(xrange(100))),
@@ -109,7 +124,11 @@ You can use a stub in place of a function, for example:
 Or you can combine it with a mock by setting it as the side_effect. This has the advantage that you can later
 verify the function was called as expected.
 
->>> from mock import Mock, call
+>>> try:
+...     from unittest.mock Mock, call
+... except ImportError:
+...     from mock import Mock, call
+>>>
 >>> mock = Mock()
 >>> mock.side_effect = stub((call("hello"), "world"),
 ...                         (call("foo"),   1,2,4,8))

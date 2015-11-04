@@ -1,18 +1,25 @@
 # mockextras.fluent
 # Matchers and Stubs for mock.
-# Copyright (C) 2012-2014 Andrew Burrows
-# E-mail: burrowsa AT gmail DOT com
+# Copyright (C) 2012-2015 Man AHL
+# E-mail: ManAHLTech AT ahl DOT com
 
 # mockextras 1.0.0
-# https://github.com/ahlmss/mockextras
+# https://github.com/manahl/mockextras
 
 # Released subject to the BSD License
-# Please see https://github.com/ahlmss/mockextras/blob/master/LICENSE.txt
+# Please see https://github.com/manahl/mockextras/blob/master/LICENSE.txt
 
 from ._matchers import __all__ as matchers_all
 from ._stub import _Sequence, _Stub
-from mock import Mock, _is_exception, call
+try:
+    from unittest.mock import call, _is_exception, _is_instance_mock
+except ImportError:
+    try:
+        from mock.mock import call, _is_exception, _is_instance_mock
+    except ImportError:
+        from mock import call, _is_exception, _is_instance_mock
 from os import linesep
+
 
 __all__ = ['when']
 
@@ -34,7 +41,7 @@ def when(mock_fn):
     class When(object):
         def __init__(self, mock_fn):
             self._mock_fn = mock_fn
-            if not isinstance(self._mock_fn, Mock):
+            if not _is_instance_mock(self._mock_fn):
                 raise RuntimeError("mock_fn must be an instance of Mock")
 
             if not isinstance(self._mock_fn.side_effect, _Stub):
@@ -43,11 +50,11 @@ def when(mock_fn):
 
                 self._mock_fn.side_effect = _Stub()
 
-            if not isinstance(self._mock_fn.side_effect._results, list):
-                self._mock_fn.side_effect._results = list(self._mock_fn.side_effect._results)
+            if not isinstance(self._mock_fn.side_effect._results, list):  #pylint: disable=protected-access
+                self._mock_fn.side_effect._results = list(self._mock_fn.side_effect._results)  #pylint: disable=protected-access
 
         def called_with(self, *args, **kwargs):
-            return CalledWith(self._mock_fn.side_effect._results, call(*args, **kwargs))
+            return CalledWith(self._mock_fn.side_effect._results, call(*args, **kwargs))  #pylint: disable=protected-access
 
     class CalledWith(object):
         def __init__(self, results, key):
@@ -74,7 +81,11 @@ when.__doc__ = """Provides a fluent API for specifying stubs.
 For example, you can specify different values to return or exceptions to raise based on the arguments
 passed into the called_with:
 
->>> from mock import Mock
+>>> try:
+...     from unittest.mock Mock
+... except ImportError:
+...     from mock import Mock
+>>>
 >>> mock = Mock()
 >>> when(mock).called_with("hello").then("world")
 <BLANKLINE>

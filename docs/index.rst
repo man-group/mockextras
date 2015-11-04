@@ -6,9 +6,9 @@
 Welcome to mockextras's documentation!
 ======================================
 
-The mockextras library is designed to be used with the mock library by Michael Foord 
-(http://www.voidspace.org.uk/python/mock/). The mockextras library adds a number of features that
-are found in other mocking libraries namely:
+The mockextras library is designed to be used with the unittest.mock library in python 3 or the mock
+backport of this (http://www.voidspace.org.uk/python/mock/) in python 2. The mockextras library adds
+a number of features that are found in other mocking libraries namely:
 
 * a fluent API for the configuration of stubs
 * stubs

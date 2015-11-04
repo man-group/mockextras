@@ -1,13 +1,13 @@
 # mockextras.matchers
 # Matchers and Stubs for mock.
-# Copyright (C) 2012-2014 Andrew Burrows
-# E-mail: burrowsa AT gmail DOT com
+# Copyright (C) 2012-2015 Man AHL
+# E-mail: ManAHLTech AT ahl DOT com
 
 # mockextras 1.0.0
-# https://github.com/ahlmss/mockextras
+# https://github.com/manahl/mockextras
 
 # Released subject to the BSD License
-# Please see https://github.com/ahlmss/mockextras/blob/master/LICENSE.txt
+# Please see https://github.com/manahl/mockextras/blob/master/LICENSE.txt
 
 __all__ = ['Any', 'Contains', 'AnyOf']
 
@@ -32,7 +32,11 @@ class Any(object):
     
     Any can be used when specifying stubs:
     
-    >>> from mock import Mock, call
+    >>> try:
+    ...     from unittest.mock Mock, call
+    ... except ImportError:
+    ...     from mock import Mock, call
+    >>>
     >>> from mockextras import stub
     >>> mock = Mock()
     >>> mock.side_effect = stub((call("hello", "world"), 100),
@@ -48,7 +52,11 @@ class Any(object):
     
     or when asserting call arguments:
     
-    >>> from mock import Mock
+    >>> try:
+    ...     from unittest.mock Mock
+    ... except ImportError:
+    ...     from mock import Mock
+    >>>
     >>> mock = Mock()
     >>> mock("bye bye", "world")
     <Mock name='mock()' id='...'>
@@ -87,7 +95,11 @@ class Contains(object):
 
     Contains can be used when specifying stubs:
     
-    >>> from mock import Mock, call
+    >>> try:
+    ...     from unittest.mock Mock, call
+    ... except ImportError:
+    ...     from mock import Mock, call
+    >>>
     >>> from mockextras import stub
     >>> mock = Mock()
     >>> mock.side_effect = stub((call("hello", "world"), 100),
@@ -97,7 +109,11 @@ class Contains(object):
     
     or when asserting call arguments:
     
-    >>> from mock import Mock
+    >>> try:
+    ...     from unittest.mock Mock
+    ... except ImportError:
+    ...     from mock import Mock
+    >>>
     >>> mock = Mock()
     >>> mock("bye bye", "world")
     <Mock name='mock()' id='...'>
@@ -132,7 +148,11 @@ class AnyOf(object):
 
     AnyOf can be used when specifying stubs:
     
-    >>> from mock import Mock, call
+    >>> try:
+    ...     from unittest.mock Mock, call
+    ... except ImportError:
+    ...     from mock import Mock, call
+    >>>
     >>> from mockextras import stub
     >>> mock = Mock()
     >>> mock.side_effect = stub((call("hello"), 100),
@@ -142,7 +162,11 @@ class AnyOf(object):
     
     or when asserting call arguments:
     
-    >>> from mock import Mock
+    >>> try:
+    ...     from unittest.mock Mock
+    ... except ImportError:
+    ...     from mock import Mock
+    >>>
     >>> mock = Mock()
     >>> mock("donkey")
     <Mock name='mock()' id='...'>

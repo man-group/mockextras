@@ -1,6 +1,9 @@
 from mockextras import stub, seq, Any
 from mockextras._stub import _Sequence
-from mock import Mock, sentinel, patch, call
+try:
+    from unittest.mock import Mock, sentinel, patch, call
+except ImportError:
+    from mock import Mock, sentinel, patch, call
 import pytest
 from datetime import datetime
 
