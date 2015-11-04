@@ -1,5 +1,8 @@
 from mockextras import when, Any
-from mock import Mock, MagicMock, sentinel
+try:
+    from unittest.mock import Mock, MagicMock, sentinel
+except ImportError:
+    from mock import Mock, MagicMock, sentinel
 import pytest
 
 
