@@ -1,4 +1,4 @@
-from mockextras import when, Any
+from mockextras import when, Any, UnexpectedStubCall
 try:
     from unittest.mock import Mock, MagicMock, sentinel
 except ImportError:
@@ -192,9 +192,17 @@ def test_when_call_then_mixed():
 def test_when_missing_case():
     mock_fn = Mock()
     when(mock_fn).called_with(sentinel.arg1).then(sentinel.result1)
+    when(mock_fn).called_with(sentinel.arg2, sentinel.arg3).then(sentinel.result2)
 
-    with pytest.raises(KeyError):
-        mock_fn(sentinel.arg2)
+    with pytest.raises(UnexpectedStubCall) as err:
+        mock_fn(sentinel.arg4)
+        
+    assert str(err.value) == """Unexpected stub call:
+    call(sentinel.arg4)
+The following calls are configured:
+    call(sentinel.arg1)
+    call(sentinel.arg2, sentinel.arg3)
+"""
 
 
 def test_duplicate_called_with_statements_second_ignored():
