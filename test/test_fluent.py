@@ -4,6 +4,7 @@ try:
 except ImportError:
     from mock import Mock, MagicMock, sentinel
 import pytest
+import sys
 
 
 def test_when_with_mock():
@@ -205,7 +206,23 @@ The following calls are configured:
 """
 
 
-def test_when_missing_unicode_case():
+@pytest.mark.skipif(sys.version_info < (3, 0), reason="Skip if Python 2")
+def test_when_missing_unicode_case_py3():
+    mock_fn = Mock()
+    when(mock_fn).called_with(u"hello \u2698").then(sentinel.result1)
+
+    with pytest.raises(UnexpectedStubCall) as err:
+        mock_fn(u"goodbye \u2698")
+        
+    assert str(err.value) == """Unexpected stub call:
+    call('goodbye \u2698')
+The following calls are configured:
+    call('hello \u2698')
+"""
+
+
+@pytest.mark.skipif(sys.version_info >= (3, 0), reason="Skip if Python 3")
+def test_when_missing_unicode_case_py2():
     mock_fn = Mock()
     when(mock_fn).called_with(u"hello \u2698").then(sentinel.result1)
 
