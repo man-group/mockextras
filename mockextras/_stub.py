@@ -71,7 +71,7 @@ class UnexpectedStubCall(Exception):
 
 def _one_per_line_indented(results, indent=4):
     return ("""
-""" + " " * indent).join([str(k) for k, _ in results])
+""" + " " * indent).join(str(k) for k, _ in results)
 
 
 class _Stub(object):

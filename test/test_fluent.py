@@ -205,6 +205,20 @@ The following calls are configured:
 """
 
 
+def test_when_missing_unicode_case():
+    mock_fn = Mock()
+    when(mock_fn).called_with(u"hello \u2698").then(sentinel.result1)
+
+    with pytest.raises(UnexpectedStubCall) as err:
+        mock_fn(u"goodbye \u2698")
+        
+    assert str(err.value) == """Unexpected stub call:
+    call(u'goodbye \\u2698')
+The following calls are configured:
+    call(u'hello \\u2698')
+"""
+
+
 def test_duplicate_called_with_statements_second_ignored():
     mock = Mock()
     when(mock).called_with(100, 200).then("monkey")
