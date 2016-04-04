@@ -209,10 +209,10 @@ The following calls are configured:
 @pytest.mark.skipif(sys.version_info < (3, 0), reason="Skip if Python 2")
 def test_when_missing_unicode_case_py3():
     mock_fn = Mock()
-    when(mock_fn).called_with(u"hello \u2698").then(sentinel.result1)
+    when(mock_fn).called_with("hello \u2698").then(sentinel.result1)
 
     with pytest.raises(UnexpectedStubCall) as err:
-        mock_fn(u"goodbye \u2698")
+        mock_fn("goodbye \u2698")
         
     assert str(err.value) == """Unexpected stub call:
     call('goodbye \u2698')
