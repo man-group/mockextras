@@ -20,7 +20,7 @@ except ImportError:
 from os import linesep
 
 
-__all__ = ['seq', 'stub']
+__all__ = ['seq', 'stub', 'UnexpectedStubCall']
 
 
 class _Sequence(object):
@@ -65,6 +65,15 @@ def seq(iterable):
     return _Sequence(iterable)
 
 
+class UnexpectedStubCall(Exception):
+    pass
+
+
+def _one_per_line_indented(results, indent=4):
+    return ("""
+""" + " " * indent).join(str(k) for k, _ in results)
+
+
 class _Stub(object):
     def __init__(self, *args):
         self._results = tuple((conf[0], seq(conf[1:])) if len(conf) > 2 else conf for conf in args)
@@ -74,7 +83,14 @@ class _Stub(object):
             # Some classes don't play by the rules so try the equals both ways around
             if key == k or k == key:
                 return value
-        raise KeyError(k)
+        if self._results:
+            raise UnexpectedStubCall("""Unexpected stub call:
+    %s
+The following calls are configured:
+    %s
+""" % (k, _one_per_line_indented(self._results)))
+        else:
+            raise UnexpectedStubCall("Unexpected call of an unconfigured stub")
 
     def __call__(self, *args, **kwargs):
         obj = self._lookup(call(*args, **kwargs))

@@ -1,9 +1,10 @@
-from mockextras import when, Any
+from mockextras import when, Any, UnexpectedStubCall
 try:
     from unittest.mock import Mock, MagicMock, sentinel
 except ImportError:
     from mock import Mock, MagicMock, sentinel
 import pytest
+import sys
 
 
 def test_when_with_mock():
@@ -192,9 +193,47 @@ def test_when_call_then_mixed():
 def test_when_missing_case():
     mock_fn = Mock()
     when(mock_fn).called_with(sentinel.arg1).then(sentinel.result1)
+    when(mock_fn).called_with(sentinel.arg2, sentinel.arg3).then(sentinel.result2)
 
-    with pytest.raises(KeyError):
-        mock_fn(sentinel.arg2)
+    with pytest.raises(UnexpectedStubCall) as err:
+        mock_fn(sentinel.arg4)
+        
+    assert str(err.value) == """Unexpected stub call:
+    call(sentinel.arg4)
+The following calls are configured:
+    call(sentinel.arg1)
+    call(sentinel.arg2, sentinel.arg3)
+"""
+
+
+@pytest.mark.skipif(sys.version_info < (3, 0), reason="Skip if Python 2")
+def test_when_missing_unicode_case_py3():
+    mock_fn = Mock()
+    when(mock_fn).called_with("hello \u2698").then(sentinel.result1)
+
+    with pytest.raises(UnexpectedStubCall) as err:
+        mock_fn("goodbye \u2698")
+        
+    assert str(err.value) == """Unexpected stub call:
+    call('goodbye \u2698')
+The following calls are configured:
+    call('hello \u2698')
+"""
+
+
+@pytest.mark.skipif(sys.version_info >= (3, 0), reason="Skip if Python 3")
+def test_when_missing_unicode_case_py2():
+    mock_fn = Mock()
+    when(mock_fn).called_with(u"hello \u2698").then(sentinel.result1)
+
+    with pytest.raises(UnexpectedStubCall) as err:
+        mock_fn(u"goodbye \u2698")
+        
+    assert str(err.value) == """Unexpected stub call:
+    call(u'goodbye \\u2698')
+The following calls are configured:
+    call(u'hello \\u2698')
+"""
 
 
 def test_duplicate_called_with_statements_second_ignored():

@@ -1,4 +1,4 @@
-from mockextras import stub, seq, Any
+from mockextras import stub, seq, Any, UnexpectedStubCall
 from mockextras._stub import _Sequence
 try:
     from unittest.mock import Mock, sentinel, patch, call
@@ -71,17 +71,32 @@ def test_seq_raises_exceptions():
 
 
 def test_lookup():
-    with pytest.raises(KeyError):
-        stub()._lookup(sentinel.keya)
-
     test_data = stub((sentinel.keya, sentinel.vala), (sentinel.keyb, sentinel.valb))
 
     assert sentinel.vala == test_data._lookup(sentinel.keya)
 
     assert sentinel.valb == test_data._lookup(sentinel.keyb)
 
-    with pytest.raises(KeyError):
+
+def test_error_on_missed_lookup_on_empty_stub():
+    with pytest.raises(UnexpectedStubCall) as err:
+        stub()._lookup(sentinel.keya)
+
+    assert str(err.value) == "Unexpected call of an unconfigured stub"
+
+
+def test_error_on_missed_lookup():
+    test_data = stub((sentinel.keya, sentinel.vala), (sentinel.keyb, sentinel.valb))
+
+    with pytest.raises(UnexpectedStubCall) as err:
         test_data._lookup(sentinel.keyc)
+
+    assert str(err.value) == """Unexpected stub call:
+    sentinel.keyc
+The following calls are configured:
+    sentinel.keya
+    sentinel.keyb
+"""
 
 
 def test_universal_side_effect():
@@ -124,9 +139,9 @@ def test_stub_sequence():
 def test_stub_missing_case():
     st = stub()
 
-    with patch.object(st, "_lookup", side_effect=KeyError) as mock_lookup: #@UndefinedVariableF
+    with patch.object(st, "_lookup", side_effect=UnexpectedStubCall) as mock_lookup: #@UndefinedVariableF
         with patch("mockextras._stub.call") as mock_callargs:
-            with pytest.raises(KeyError):
+            with pytest.raises(UnexpectedStubCall):
                 assert st(sentinel.arg1, sentinel.arg2)
 
     mock_callargs.assert_called_once_with(sentinel.arg1, sentinel.arg2)
