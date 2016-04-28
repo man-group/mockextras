@@ -11,7 +11,7 @@
 
 if __name__ == "__main__":
     params = dict(name="mockextras",
-        version="1.0.1",
+        version="1.0.2",
         description="Extensions to the mock library",
         author="Man AHL",
         author_email="ManAHLTech@ahl.com",
