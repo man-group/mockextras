@@ -1,4 +1,5 @@
 from mockextras import Any, Contains, AnyOf
+import pytest
 
 
 def test_any_equality():
@@ -36,48 +37,38 @@ def test_pretty_print_any():
     assert str(b) == "Any(<type 'str'>)" or str(b) == "Any(<class 'str'>)"
 
 
-def test_any_such_that_equality():
-    assert Any().such_that(lambda x: x == "hello") == "hello"
-    assert "hello" == Any().such_that(lambda x: x == "hello")
+def is_positive(number):
+    return number >= 0
 
-    assert Any().such_that(lambda x: x == "hello") != "world"
-    assert "world" != Any().such_that(lambda x: x == "hello")
 
-    assert Any().such_that(bool) == [1]
-    assert [1] == Any().such_that(bool)
+@pytest.mark.parametrize(
+    "predicates,matches,not_matches",
+    (
+        ([lambda x: x == "hello"], ["hello"], ["world"]),
+        ([bool], [[1], 1, True], [[], 0, False, None]),
+        ([lambda x: x > 75], [100], [50]),
+        ([lambda x: len(x) > 3, lambda x: x[0] == "h"], ["hello"], ["hi", "greetings", ""]),
+        ([is_positive], [2], [-2]),
+    )
+)
+def test_any_such_that_equality(predicates, matches, not_matches):
+    matcher = reduce(lambda m, p: m.such_that(p), predicates, Any())
 
-    assert Any().such_that(bool) != []
-    assert [] != Any().such_that(bool)
+    for match in matches:
+        assert matcher == match
+        assert match == matcher
 
-    assert Any().such_that(lambda x: x > 75) == 100
-    assert 100 == Any().such_that(lambda x: x > 75)
+    for not_match in not_matches:
+        assert matcher != not_match
+        assert not_match != matcher
 
-    assert Any().such_that(lambda x: x > 75) != 50
-    assert 50 != Any().such_that(lambda x: x > 75)
 
+def test_any_such_that_equality_typed():
     assert Any(str).such_that(lambda x: len(x) > 3) == "hello"
     assert "hello" == Any(str).such_that(lambda x: len(x) > 3)
 
     assert Any(str).such_that(lambda x: len(x) > 3) != ["h", "e", "l", "l", "o"]
     assert ["h", "e", "l", "l", "o"] != Any(str).such_that(lambda x: len(x) > 3)
-
-    assert Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h") == "hello"
-    assert "hello" == Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h")
-
-    assert Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h") != "hi"
-    assert "hi" != Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h")
-
-    assert Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h") != "greetings"
-    assert "greetings" != Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h")
-
-    def is_positive(number):
-        return number >= 0
-
-    assert Any(int).such_that(is_positive) == 2
-    assert 2 == Any(int).such_that(is_positive)
-
-    assert Any(int).such_that(is_positive) != -2
-    assert -2 != Any(int).such_that(is_positive)
 
 
 def test_any_such_that_not_mutated():
