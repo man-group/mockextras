@@ -1,4 +1,5 @@
 from mockextras import Any, Contains, AnyOf
+import functools
 import pytest
 
 
@@ -52,7 +53,7 @@ def is_positive(number):
     )
 )
 def test_any_such_that_equality(predicates, matches, not_matches):
-    matcher = reduce(lambda m, p: m.such_that(p), predicates, Any())
+    matcher = functools.reduce(lambda m, p: m.such_that(p), predicates, Any())
 
     for match in matches:
         assert matcher == match
