@@ -29,6 +29,17 @@ class Any(object):
     >>> assert anystring == 'monkey'
     >>> assert anystring == u'bonjour'
     >>> assert anystring != ['hello', 'world']
+
+    Test additional predicates as needed:
+
+    >>> loud_short_string = (
+    ...     Any(basestring)
+    ...     .such_that(lambda s: len(s) < 6)
+    ...     .such_that(lambda s: s.upper() == s)
+    ... )
+    >>> assert loud_short_string == "HI"
+    >>> assert loud_short_string != "TOO LONG"
+    >>> assert loud_short_string != "quiet"
     
     Any can be used when specifying stubs:
     
@@ -67,17 +78,31 @@ class Any(object):
     >>> assert mock.call_args_list == [call("bye bye", "world"),
     ...                                call("bye bye", Any())]
     """
-    def __init__(self, cls=object):
+    def __init__(self, cls=object, predicates=None):
         self._cls = cls
+        self._predicates = predicates or []
 
     def __eq__(self, other):
-        return isinstance(other, self._cls)
+        return (
+            isinstance(other, self._cls) and
+            all(predicate(other) for predicate in self._predicates)
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
     def __repr__(self):
-        return 'Any(%s)' % ('' if self._cls is object else self._cls)
+        base = 'Any(%s)' % ('' if self._cls is object else self._cls)
+        such_thats = (
+            '.' +
+            '.'.join('such_that(%s)' % getattr(p, "__name__", p) for p in self._predicates)
+        ) if self._predicates else ''
+        return base + such_thats
+
+    def such_that(self, predicate):
+        new_predicates = list(self._predicates)
+        new_predicates.append(predicate)
+        return Any(cls=self._cls, predicates=new_predicates)
 
 
 class Contains(object):

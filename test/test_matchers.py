@@ -36,6 +36,87 @@ def test_pretty_print_any():
     assert str(b) == "Any(<type 'str'>)" or str(b) == "Any(<class 'str'>)"
 
 
+def test_any_such_that_equality():
+    assert Any().such_that(lambda x: x == "hello") == "hello"
+    assert "hello" == Any().such_that(lambda x: x == "hello")
+
+    assert Any().such_that(lambda x: x == "hello") != "world"
+    assert "world" != Any().such_that(lambda x: x == "hello")
+
+    assert Any().such_that(bool) == [1]
+    assert [1] == Any().such_that(bool)
+
+    assert Any().such_that(bool) != []
+    assert [] != Any().such_that(bool)
+
+    assert Any().such_that(lambda x: x > 75) == 100
+    assert 100 == Any().such_that(lambda x: x > 75)
+
+    assert Any().such_that(lambda x: x > 75) != 50
+    assert 50 != Any().such_that(lambda x: x > 75)
+
+    assert Any(str).such_that(lambda x: len(x) > 3) == "hello"
+    assert "hello" == Any(str).such_that(lambda x: len(x) > 3)
+
+    assert Any(str).such_that(lambda x: len(x) > 3) != ["h", "e", "l", "l", "o"]
+    assert ["h", "e", "l", "l", "o"] != Any(str).such_that(lambda x: len(x) > 3)
+
+    assert Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h") == "hello"
+    assert "hello" == Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h")
+
+    assert Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h") != "hi"
+    assert "hi" != Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h")
+
+    assert Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h") != "greetings"
+    assert "greetings" != Any(str).such_that(lambda x: len(x) > 3).such_that(lambda x: x[0] == "h")
+
+    def is_positive(number):
+        return number >= 0
+
+    assert Any(int).such_that(is_positive) == 2
+    assert 2 == Any(int).such_that(is_positive)
+
+    assert Any(int).such_that(is_positive) != -2
+    assert -2 != Any(int).such_that(is_positive)
+
+
+def test_any_such_that_not_mutated():
+    """Ensure that `such_that` operates on a new copy of the matcher instead
+    of mutating the old one.
+    """
+    a = Any(basestring).such_that(lambda s: s[0] == "a")
+    b = a.such_that(lambda s: s[1] == "b")
+    c = a.such_that(lambda s: s[1] == "c")
+
+    assert b == "able"
+    assert "able" == b
+    assert b is not a
+
+    assert c == "act"
+    assert "act" == c
+    assert c is not a
+
+
+def test_pretty_print_any_such_that():
+    def my_predicate(x):
+        return True
+
+    a = Any()
+    aa = a.such_that(my_predicate).such_that(lambda: True)
+    assert repr(aa) == repr(a) + ".such_that(my_predicate).such_that(<lambda>)"
+    assert str(aa) == str(a) + ".such_that(my_predicate).such_that(<lambda>)"
+
+    class Predicate(object):
+        @classmethod
+        def __call__(cls, x):
+            return True
+
+    b = Any(str)
+    bb = b.such_that(Predicate)
+    assert repr(bb) == repr(b) + ".such_that(Predicate)"
+    assert str(bb) == str(b) + ".such_that(Predicate)"
+
+
 def test_contains_equality():
     assert Contains('h') == "hello"
     assert Contains('hell') == "hello"
