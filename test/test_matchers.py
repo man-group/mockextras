@@ -84,7 +84,7 @@ def test_any_such_that_not_mutated():
     """Ensure that `such_that` operates on a new copy of the matcher instead
     of mutating the old one.
     """
-    a = Any(basestring).such_that(lambda s: s[0] == "a")
+    a = Any(str).such_that(lambda s: s[0] == "a")
     b = a.such_that(lambda s: s[1] == "b")
     c = a.such_that(lambda s: s[1] == "c")
 

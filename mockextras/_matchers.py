@@ -33,7 +33,7 @@ class Any(object):
     Test additional predicates as needed:
 
     >>> loud_short_string = (
-    ...     Any(basestring)
+    ...     Any(str)
     ...     .such_that(lambda s: len(s) < 6)
     ...     .such_that(lambda s: s.upper() == s)
     ... )
