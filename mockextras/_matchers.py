@@ -100,9 +100,7 @@ class Any(object):
         return base + such_thats
 
     def such_that(self, predicate):
-        new_predicates = list(self._predicates)
-        new_predicates.append(predicate)
-        return Any(cls=self._cls, predicates=new_predicates)
+        return Any(cls=self._cls, predicates=self._predicates + [predicate])
 
 
 class Contains(object):
